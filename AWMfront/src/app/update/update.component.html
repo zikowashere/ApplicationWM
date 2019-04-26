@@ -1,0 +1,6 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+
+      <input type="text" #f (add)="Update(f.value)" name="nom" class="form-control mb-4" placeholder="titre">
+      <button class="btn btn-primary" (click)="Update(f.value)">ajouter </button>

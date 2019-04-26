@@ -1,0 +1,42 @@
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+</ion-content>
+
+<ion-row *ngFor="let i of TodoGroup">
+  <ion-grid>
+<ion-card>
+  <ion-card-header>
+    <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
+    <ion-card-title >{{i.nom}}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    Keep close to Nature's heart... and break clear away, once in awhile,
+    and climb a mountain or spend a week in the woods. Wash your spirit clean.
+  </ion-card-content>
+</ion-card>
+
+<ion-card>
+  <ion-item>
+    <ion-icon name="pin" slot="start"></ion-icon>
+    <ion-label>liste</ion-label>
+    <ion-button  href="tache/{{i._id}}" fill="outline" slot="end">Open</ion-button>
+  </ion-item>
+
+</ion-card>
+
+<ion-card>
+  <ion-item href="#" class="activated">
+    <ion-icon name="wifi" slot="start"></ion-icon>
+    <ion-label>modifier</ion-label>
+  </ion-item>
+
+  <ion-item href="#">
+    <ion-icon name="wine" slot="start"></ion-icon>
+    <ion-label (click)="delete(i._id)">supprimer</ion-label>
+  </ion-item>
+</ion-card>
+  </ion-grid>
+ </ion-row>

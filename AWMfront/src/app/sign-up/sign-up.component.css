@@ -1,0 +1,15 @@
+.sign-up {
+  width: 1000px;
+  height: 500px;
+  display: block;
+}
+#formulaire{
+
+  width: 400px;
+  height: 400px;
+  padding: 50px;
+  margin-block-end: 100px;
+}
+.form-class{
+  float: right;
+}
