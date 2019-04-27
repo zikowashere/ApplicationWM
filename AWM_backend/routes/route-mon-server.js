@@ -11,6 +11,7 @@ let Todos = require('../model/Todos');
 let TodoGroup = require('../model/TodoGroup');
 let session = require('express-session');
 let cors = require('cors');
+let bool =false;
 require('../model/mongoConnect');
 
 router.use(logger('dev'));
@@ -71,39 +72,6 @@ router.post('/signUp', [
     }
 });
 
-router.post('/signIn', function(req, res) {
-    let email = req.body.email;
-    let password = req.body.password;
-    User.findOne({
-        email: email
-    })
-        .then(user => {
-            if(!user)
-                res.json({
-                    'status' : 'error',
-                    'message' : 'Cet utilisateur n\'existe pas'
-                });
-            bcrypt.compare(password, user.password)
-                .then(response => {
-                    if(response)
-                        res.json({
-                            'status' : 'success',
-                            'message' : 'Bienvenue'
-                        });
-                    else
-                        res.json({
-                            'status' : 'error',
-                            'message' : 'Email ou mot de passe incorrect'
-                        });
-                })
-                .catch(error => {
-                    res.json(error);
-                });
-        })
-        .catch(error => {
-            res.json(error);
-        });
-});
 
 router.post('/todo/create/:owner/:group', (req, res) => {
 
@@ -126,6 +94,40 @@ router.post('/todo/create/:owner/:group', (req, res) => {
         });
 
 });
+router.post('/signIn', function(req, res) {
+    let email = req.body.email;
+    let password = req.body.password;
+    User.findOne({
+        email: email
+    })
+        .then(user => {
+            if(!user)
+                res.json(bool=false);
+            bcrypt.compare(password, user.password)
+                .then(response => {
+                    if(response)
+                        res.json(bool=true);
+                    else
+                        res.json(bool=false);
+                })
+                .catch(error => {
+                    res.json(error);
+                });
+        })
+        .catch(error => {
+            res.json(error);
+        });
+});
+
+router.get('/todos/:todoGroup', function (req, res) {
+    Todos.find({group: req.params.todoGroup})
+        .then(resolve => {
+            res.json(resolve);
+        })
+        .catch(error => {
+            res.json(error);
+        });
+});
 
 router.post('/todoGroup/create/:owner', (req, res) => {
 
@@ -137,8 +139,8 @@ router.post('/todoGroup/create/:owner', (req, res) => {
         .save()
         .then(response => {
             res.send({
-                'status' : 'success',
-                'message' : 'TodoGroup bien créé'
+                'status' : 'ok group',
+                'message' : 'bien crée'
             });
         })
         .catch(error => {
@@ -160,15 +162,7 @@ router.get('/user/todoGroups/:owner', function(req, res) {
         });
 });
 
-router.get('/todos/:todoGroup', function (req, res) {
-    Todos.find({group: req.params.todoGroup})
-        .then(resolve => {
-            res.json(resolve);
-        })
-        .catch(error => {
-            res.json(error);
-        });
-});
+
 
 router.delete('/todo/delete/:id', (req, res) => {
     Todos.deleteOne({
@@ -176,8 +170,8 @@ router.delete('/todo/delete/:id', (req, res) => {
     })
         .then(response => {
             res.json({
-                'status' : 'success',
-                'message' : 'Todo bien supprimé'
+                'status' : 'ok',
+                'message' : 'bien crée'
             });
         })
         .catch(error => {
@@ -197,7 +191,7 @@ router.delete('/todoGroup/delete/:id', (req, res) => {
                 .then(resolve => {
                     res.json({
                         'status' : 'success',
-                        'message' : 'Ta liste de tâche a été bien supprimée ainsi que toutes ses tâches'
+                        'message' : 'Ta liste  est supprimée '
                     });
                 })
                 .catch(errors => {
@@ -227,7 +221,7 @@ router.put('/todo/update/:id', (req, res) => {
                 .then(response => {
                     res.json({
                         'status': 'success',
-                        'message': 'Todo bien mis à jour'
+                        'message': 'Todo  mis à jour'
                     });
                 })
                 .catch(error => {
@@ -246,6 +240,32 @@ router.get('/user/:email', function (req, res) {
     })
         .then(response => {
             res.json(response);
+        })
+        .catch(error => {
+            res.json(error);
+        });
+});
+router.put('/todoGroup/update/:id', (req, res) => {
+
+    TodoGroup.findOne({
+        _id: req.params.id
+    })
+        .then(todo => {
+            if (req.body.nom !== undefined) {
+                todo.nom = req.body.nom;
+                todo.date = new Date();
+            }
+
+            todo.save()
+                .then(response => {
+                    res.json({
+                        'status': 'success',
+                        'message': 'TodoGroup  mis à jour'
+                    });
+                })
+                .catch(error => {
+                    res.json(error);
+                });
         })
         .catch(error => {
             res.json(error);
